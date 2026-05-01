@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#111111">
+<title>Tarificatix</title>
+<style>
+/* ===== FONTS ===== */
+@font-face { font-family: 'Font1'; src: url('font1.ttf') format('opentype'); }
+@font-face { font-family: 'Font2'; src: url('font2.ttf') format('opentype'); }
+@font-face { font-family: 'Font3'; src: url('font3.ttf') format('opentype'); }
+@font-face { font-family: 'Font4'; src: url('font4.ttf') format('opentype'); }
+
+/* ===== ROOT VARIABLES ===== */
+:root {
+  --accent-h: 28;
+  --accent-s: 90%;
+  --accent-l: 55%;
+  --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+  --accent-dim: hsl(var(--accent-h), var(--accent-s), 35%);
+  --accent-glow: hsl(var(--accent-h), var(--accent-s), 70%);
+
+  --r: 28;
+  --g: 90;
+  --b: 55;
+
+  --title-font: 'Font1', Georgia, serif;
+  --body-font: Arial, Helvetica, sans-serif;
+
+  /* DARK MODE (default) */
+  --bg: #111214;
+  --bg2: #1a1c1f;
+  --bg3: #222428;
+  --surface: #1e2024;
+  --surface2: #272a2f;
+  --border: #33363d;
+  --text: #e8eaed;
+  --text-dim: #8a8f9a;
+  --text-muted: #555a66;
+  --shadow: rgba(0,0,0,0.5);
+  --input-bg: #161819;
+  --card-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+[data-theme="light"] {
+  --bg: #f0f2f5;
+  --bg2: #e8ebef;
+  --bg3: #dde0e6;
+  --surface: #ffffff;
+  --surface2: #f5f7fa;
+  --border: #d0d4dc;
+  --text: #1a1c22;
+  --text-dim: #4a5060;
+  --text-muted: #8a90a0;
+  --shadow: rgba(0,0,0,0.12);
+  --input-bg: #f8f9fb;
+  --card-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--body-font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  line-height: 1.5;
+  transition: background 0.3s, color 0.3s;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ===== LAYOUT ===== */
+.app-wrapper {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 0 env(safe-area-inset-bottom, 16px);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: clamp(10px, 3vw, 16px) clamp(14px, 4vw, 20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.app-title {
+  font-family: var(--title-font);
+  font-size: clamp(1.4rem, 6vw, 1.9rem);
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-weight: normal;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  width: clamp(38px, 10vw, 44px);
+  height: clamp(38px, 10vw, 44px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+  font-family: var(--body-font);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.icon-btn:active { background: var(--bg3); transform: scale(0.96); }
+
+/* ===== MAIN CONTENT ===== */
+main {
+  flex: 1;
+  padding: clamp(14px, 4vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 3vw, 18px);
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: clamp(14px, 4vw, 20px);
+  box-shadow: var(--card-shadow);
+}
+
+.card-title {
+  font-family: var(--title-font);
+  font-size: clamp(0.85rem, 3vw, 1rem);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: normal;
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+/* ===== TARIF SELECTOR ===== */
+.tarif-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: clamp(14px, 3vw, 18px);
+}
+
+.tarif-btn {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(10px, 2.5vw, 14px) 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  color: var(--text);
+  font-family: var(--body-font);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.tarif-btn:active { transform: scale(0.95); }
+.tarif-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.tarif-btn-label {
+  font-weight: 800;
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  line-height: 1;
+  display: block;
+}
+.tarif-btn-price {
+  font-size: clamp(0.65rem, 2.2vw, 0.78rem);
+  opacity: 0.75;
+  margin-top: 3px;
+  display: block;
+}
+.tarif-btn.active .tarif-btn-price { opacity: 0.9; }
+
+/* ===== DISTANCE INPUT ===== */
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-group {
+  flex: 1;
+  position: relative;
+}
+
+.input-label {
+  font-size: clamp(0.72rem, 2.3vw, 0.82rem);
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.distance-input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 16px) clamp(14px, 3.5vw, 18px);
+  font-size: clamp(1.1rem, 4vw, 1.3rem);
+  font-family: var(--body-font);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.distance-input:focus { border-color: var(--accent); }
+.distance-input::placeholder { color: var(--text-muted); }
+
+.unit-badge {
+  color: var(--text-dim);
+  font-size: clamp(0.8rem, 2.8vw, 0.9rem);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ===== CALCULATE BUTTON ===== */
+.calc-btn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: clamp(14px, 4vw, 18px);
+  font-family: var(--title-font);
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: clamp(6px, 2vw, 10px);
+  font-weight: normal;
+}
+.calc-btn:active { transform: scale(0.98); filter: brightness(0.9); }
+.calc-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ===== RESULT ===== */
+.result-display {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+}
+.result-display.visible { display: flex; }
+
+.result-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.result-price {
+  font-family: var(--title-font);
+  font-size: clamp(2rem, 10vw, 3rem);
+  color: var(--accent);
+  font-weight: normal;
+  line-height: 1;
+}
+
+.result-detail {
+  font-size: clamp(0.72rem, 2.3vw, 0.82rem);
+  color: var(--text-dim);
+  line-height: 1.8;
+  text-align: right;
+}
+
+.add-to-list-btn {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(10px, 3vw, 14px);
+  font-family: var(--body-font);
+  font-size: clamp(0.82rem, 2.8vw, 0.92rem);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.add-to-list-btn:active { background: var(--bg3); transform: scale(0.98); }
+
+/* ===== COURSES LIST ===== */
+.courses-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(10px, 2.5vw, 14px);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.courses-total {
+  font-family: var(--title-font);
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  color: var(--accent);
+  font-weight: normal;
+}
+
+.clear-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: clamp(0.7rem, 2.2vw, 0.78rem);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--body-font);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.clear-btn:active { background: var(--bg3); }
+
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.course-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(10px, 2.8vw, 14px) clamp(12px, 3.2vw, 16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  animation: slideIn 0.2s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.course-item-left { flex: 1; min-width: 0; }
+.course-item-num {
+  font-size: clamp(0.65rem, 2vw, 0.72rem);
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.course-item-info {
+  font-size: clamp(0.8rem, 2.6vw, 0.88rem);
+  color: var(--text-dim);
+}
+.course-item-info strong { color: var(--text); }
+
+.course-item-price {
+  font-family: var(--title-font);
+  font-size: clamp(1.1rem, 4.5vw, 1.35rem);
+  color: var(--text);
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.course-delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: clamp(0.72rem, 2.3vw, 0.8rem);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-family: var(--body-font);
+  font-weight: 700;
+  transition: color 0.15s;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.course-delete:active { color: #e55; }
+
+.empty-list {
+  text-align: center;
+  padding: clamp(16px, 5vw, 24px);
+  color: var(--text-muted);
+  font-size: clamp(0.8rem, 2.6vw, 0.9rem);
+}
+
+/* ===== TOTAL BAR ===== */
+.total-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: clamp(12px, 3vw, 16px) clamp(14px, 4vw, 20px);
+  padding-bottom: calc(clamp(12px, 3vw, 16px) + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.total-label {
+  font-size: clamp(0.72rem, 2.3vw, 0.82rem);
+  color: var(--text-dim);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.total-amount {
+  font-family: var(--title-font);
+  font-size: clamp(1.5rem, 7vw, 2rem);
+  color: var(--accent);
+  font-weight: normal;
+  line-height: 1;
+}
+
+/* ===== SETTINGS OVERLAY ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  align-items: flex-end;
+  justify-content: center;
+}
+.overlay.open { display: flex; }
+
+.settings-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  padding: clamp(16px, 4vw, 24px);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(18px, 4vw, 24px);
+}
+
+.settings-title {
+  font-family: var(--title-font);
+  font-size: clamp(1.1rem, 5vw, 1.4rem);
+  color: var(--accent);
+  font-weight: normal;
+}
+
+.close-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: var(--body-font);
+  letter-spacing: 0.04em;
+}
+.close-btn:active { background: var(--bg3); }
+
+.settings-section {
+  margin-bottom: clamp(20px, 4vw, 26px);
+}
+
+.settings-section-label {
+  font-size: clamp(0.7rem, 2.3vw, 0.78rem);
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: clamp(10px, 2.5vw, 14px);
+}
+
+/* ===== THEME TOGGLE ===== */
+.theme-toggle {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.theme-opt {
+  flex: 1;
+  text-align: center;
+  padding: clamp(8px, 2.5vw, 11px);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: clamp(0.78rem, 2.5vw, 0.86rem);
+  font-weight: 600;
+  color: var(--text-dim);
+  transition: all 0.15s;
+  border: none;
+  background: none;
+  font-family: var(--body-font);
+}
+.theme-opt.active {
+  background: var(--accent);
+  color: #fff;
+}
+.theme-opt:active { transform: scale(0.97); }
+
+/* ===== COLOR SLIDERS ===== */
+.rgb-sliders { display: flex; flex-direction: column; gap: clamp(10px, 2.5vw, 14px); }
+
+.slider-row { display: flex; align-items: center; gap: 10px; }
+
+.slider-label {
+  font-size: clamp(0.72rem, 2.3vw, 0.8rem);
+  font-weight: 700;
+  width: 24px;
+  flex-shrink: 0;
+  color: var(--text);
+}
+.slider-label.r { color: #ff4444; }
+.slider-label.g { color: #44cc44; }
+.slider-label.b { color: #4488ff; }
+
+.color-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+.color-slider.r { background: linear-gradient(to right, #220000, #ff4444); }
+.color-slider.g { background: linear-gradient(to right, #002200, #44cc44); }
+.color-slider.b { background: linear-gradient(to right, #000022, #4488ff); }
+
+.color-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--accent);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+.slider-val {
+  font-size: clamp(0.7rem, 2.2vw, 0.78rem);
+  color: var(--text-dim);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.accent-preview {
+  width: 100%;
+  height: clamp(32px, 7vw, 40px);
+  border-radius: 10px;
+  margin-top: 10px;
+  transition: background 0.1s;
+}
+
+/* ===== FONT SELECTOR ===== */
+.font-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.font-opt {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(10px, 3vw, 14px) clamp(12px, 3.5vw, 16px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.15s;
+  border: none;
+  width: 100%;
+  text-align: left;
+  border: 2px solid var(--border);
+}
+.font-opt.active {
+  border-color: var(--accent);
+  background: var(--bg3);
+}
+.font-opt:active { transform: scale(0.99); }
+
+.font-opt-name {
+  font-family: var(--body-font);
+  font-size: clamp(0.72rem, 2.3vw, 0.8rem);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+.font-opt-preview {
+  font-size: clamp(1.1rem, 4vw, 1.35rem);
+  color: var(--text);
+}
+.font-opt-preview.f1 { font-family: 'Font1', Georgia, serif; }
+.font-opt-preview.f2 { font-family: 'Font2', 'Times New Roman', serif; }
+.font-opt-preview.f3 { font-family: 'Font3', Palatino, serif; }
+.font-opt-preview.f4 { font-family: 'Font4', Garamond, serif; }
+.font-opt.active .font-opt-preview { color: var(--accent); }
+
+.font-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.font-opt.active .font-indicator { background: var(--accent); }
+
+/* ===== DIVIDER ===== */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: clamp(4px, 1.5vw, 8px) 0 clamp(18px, 4vw, 24px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 380px) {
+  .tarif-grid { gap: 6px; }
+  .tarif-btn { border-radius: 10px; }
+  .tarif-btn-label { font-size: 0.95rem; }
+  .tarif-btn-price { font-size: 0.6rem; }
+}
+
+@media (min-width: 600px) {
+  .app-wrapper { padding-top: 8px; }
+  header { border-radius: 0 0 16px 16px; }
+}
+</style>
+</head>
+<body data-theme="dark">
+<div class="app-wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left"></div>
+    <div class="header-center">
+      <span class="app-title">Tarificatix</span>
+    </div>
+    <div class="header-right">
+      <div class="header-actions">
+        <button class="icon-btn" id="settingsBtn" title="Paramètres" style="font-size:1.25rem;">⚙️</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- CALCUL CARD -->
+    <div class="card">
+      <div class="card-title">Nouvelle course</div>
+
+      <!-- TARIF SELECTOR -->
+      <div class="tarif-grid">
+        <button class="tarif-btn active" data-tarif="A" data-rate="1.10" onclick="selectTarif(this)">
+          <span class="tarif-btn-label">A</span>
+          <span class="tarif-btn-price">1,10 /km</span>
+        </button>
+        <button class="tarif-btn" data-tarif="B" data-rate="1.65" onclick="selectTarif(this)">
+          <span class="tarif-btn-label">B</span>
+          <span class="tarif-btn-price">1,65 /km</span>
+        </button>
+        <button class="tarif-btn" data-tarif="C" data-rate="2.20" onclick="selectTarif(this)">
+          <span class="tarif-btn-label">C</span>
+          <span class="tarif-btn-price">2,20 /km</span>
+        </button>
+        <button class="tarif-btn" data-tarif="D" data-rate="3.30" onclick="selectTarif(this)">
+          <span class="tarif-btn-label">D</span>
+          <span class="tarif-btn-price">3,30 /km</span>
+        </button>
+      </div>
+
+      <!-- DISTANCE INPUT -->
+      <label class="input-label" for="distanceInput">Distance</label>
+      <div class="input-row">
+        <div class="input-group">
+          <input
+            type="number"
+            id="distanceInput"
+            class="distance-input"
+            placeholder="0.0"
+            min="0"
+            step="0.1"
+            inputmode="decimal"
+          >
+        </div>
+        <span class="unit-badge">km</span>
+      </div>
+
+      <button class="calc-btn" onclick="calculate()">Calculer</button>
+
+      <!-- RESULT -->
+      <div class="result-display" id="resultDisplay">
+        <div class="divider"></div>
+        <div class="result-main">
+          <div class="result-price" id="resultPrice">0,00 €</div>
+          <div class="result-detail" id="resultDetail"></div>
+        </div>
+        <button class="add-to-list-btn" onclick="addToList()">Ajouter à la liste des courses</button>
+      </div>
+    </div>
+
+    <!-- COURSES CARD -->
+    <div class="card">
+      <div class="courses-header">
+        <div class="card-title" style="margin-bottom:0">Courses</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="courses-total" id="coursesTotal"></span>
+          <button class="clear-btn" onclick="clearCourses()">Effacer</button>
+        </div>
+      </div>
+      <div class="courses-list" id="coursesList">
+        <div class="empty-list" id="emptyMsg">Aucune course enregistrée</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TOTAL BAR -->
+  <div class="total-bar" id="totalBar" style="display:none">
+    <span class="total-label">Total general</span>
+    <span class="total-amount" id="totalAmount">0,00 €</span>
+  </div>
+
+</div>
+
+<!-- SETTINGS OVERLAY -->
+<div class="overlay" id="settingsOverlay">
+  <div class="settings-panel">
+    <div class="settings-header">
+      <span class="settings-title">Paramètres</span>
+      <button class="close-btn" onclick="closeSettings()">✕</button>
+    </div>
+
+    <!-- THEME -->
+    <div class="settings-section">
+      <div class="settings-section-label">Apparence</div>
+      <div class="theme-toggle">
+        <button class="theme-opt active" id="darkOpt" onclick="setTheme('dark')">Mode sombre</button>
+        <button class="theme-opt" id="lightOpt" onclick="setTheme('light')">Mode clair</button>
+      </div>
+    </div>
+
+    <!-- COLOR -->
+    <div class="settings-section">
+      <div class="settings-section-label">Couleur tonique</div>
+      <div class="rgb-sliders">
+        <div class="slider-row">
+          <span class="slider-label r">R</span>
+          <input type="range" class="color-slider r" id="sliderR" min="0" max="255" value="220" oninput="updateRGB()">
+          <span class="slider-val" id="valR">220</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label g">G</span>
+          <input type="range" class="color-slider g" id="sliderG" min="0" max="255" value="110" oninput="updateRGB()">
+          <span class="slider-val" id="valG">110</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label b">B</span>
+          <input type="range" class="color-slider b" id="sliderB" min="0" max="255" value="30" oninput="updateRGB()">
+          <span class="slider-val" id="valB">30</span>
+        </div>
+      </div>
+      <div class="accent-preview" id="accentPreview"></div>
+    </div>
+
+    <!-- FONT -->
+    <div class="settings-section">
+      <div class="settings-section-label">Typographie des titres</div>
+      <div class="font-grid">
+        <button class="font-opt active" data-font="Font1" onclick="selectFont(this)">
+          <span class="font-opt-name">Police 1</span>
+          <span class="font-opt-preview f1">Tarificatix</span>
+          <span class="font-indicator"></span>
+        </button>
+        <button class="font-opt" data-font="Font2" onclick="selectFont(this)">
+          <span class="font-opt-name">Police 2</span>
+          <span class="font-opt-preview f2">Tarificatix</span>
+          <span class="font-indicator"></span>
+        </button>
+        <button class="font-opt" data-font="Font3" onclick="selectFont(this)">
+          <span class="font-opt-name">Police 3</span>
+          <span class="font-opt-preview f3">Tarificatix</span>
+          <span class="font-indicator"></span>
+        </button>
+        <button class="font-opt" data-font="Font4" onclick="selectFont(this)">
+          <span class="font-opt-name">Police 4</span>
+          <span class="font-opt-preview f4">Tarificatix</span>
+          <span class="font-indicator"></span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+const BASE_FEE = 3.00;
+const TARIFS = { A: 1.10, B: 1.65, C: 2.20, D: 3.30 };
+
+let state = {
+  selectedTarif: 'A',
+  selectedRate: 1.10,
+  currentResult: null,
+  courses: [],
+  theme: 'dark',
+  accentR: 220,
+  accentG: 110,
+  accentB: 30,
+  titleFont: 'Font1'
+};
+
+// ===== INIT =====
+function init() {
+  const saved = localStorage.getItem('tarificatix_state');
+  if (saved) {
+    try {
+      const s = JSON.parse(saved);
+      state.courses = s.courses || [];
+      state.theme = s.theme || 'dark';
+      state.accentR = s.accentR ?? 220;
+      state.accentG = s.accentG ?? 110;
+      state.accentB = s.accentB ?? 30;
+      state.titleFont = s.titleFont || 'Font1';
+    } catch(e) {}
+  }
+  applyTheme(state.theme);
+  applyAccent();
+  applyFont(state.titleFont);
+  renderCourses();
+  syncSettingsUI();
+}
+
+function saveState() {
+  localStorage.setItem('tarificatix_state', JSON.stringify({
+    courses: state.courses,
+    theme: state.theme,
+    accentR: state.accentR,
+    accentG: state.accentG,
+    accentB: state.accentB,
+    titleFont: state.titleFont
+  }));
+}
+
+// ===== TARIF =====
+function selectTarif(btn) {
+  document.querySelectorAll('.tarif-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.selectedTarif = btn.dataset.tarif;
+  state.selectedRate = parseFloat(btn.dataset.rate);
+  hideResult();
+}
+
+// ===== CALCULATE =====
+function calculate() {
+  const dist = parseFloat(document.getElementById('distanceInput').value);
+  if (isNaN(dist) || dist <= 0) {
+    document.getElementById('distanceInput').focus();
+    return;
+  }
+
+  // La prise en charge (3€) n'est appliquée qu'à la toute première course
+  const isFirst = state.courses.length === 0;
+  const fee = isFirst ? BASE_FEE : 0;
+  const fare = state.selectedRate * dist;
+  const total = fee + fare;
+
+  state.currentResult = {
+    tarif: state.selectedTarif,
+    rate: state.selectedRate,
+    distance: dist,
+    fee: fee,
+    fare: fare,
+    total: total,
+    isFirst: isFirst
+  };
+
+  const r = state.currentResult;
+  document.getElementById('resultPrice').textContent = formatEur(r.total);
+
+  let detail = `Tarif ${r.tarif}  ×  ${r.distance.toFixed(1)} km = ${formatEur(r.fare)}`;
+  if (r.isFirst) detail += `\nPrise en charge : ${formatEur(BASE_FEE)}`;
+
+  document.getElementById('resultDetail').textContent = detail;
+  document.getElementById('resultDisplay').classList.add('visible');
+}
+
+function hideResult() {
+  document.getElementById('resultDisplay').classList.remove('visible');
+  state.currentResult = null;
+}
+
+// ===== ADD TO LIST =====
+function addToList() {
+  if (!state.currentResult) return;
+  state.courses.push({ ...state.currentResult, id: Date.now() });
+  state.currentResult = null;
+  document.getElementById('distanceInput').value = '';
+  document.getElementById('resultDisplay').classList.remove('visible');
+  renderCourses();
+  saveState();
+}
+
+// ===== RENDER COURSES =====
+function renderCourses() {
+  const list = document.getElementById('coursesList');
+  const emptyMsg = document.getElementById('emptyMsg');
+  const totalBar = document.getElementById('totalBar');
+  const totalAmount = document.getElementById('totalAmount');
+  const coursesTotal = document.getElementById('coursesTotal');
+
+  // Vider uniquement les items de course, sans toucher à emptyMsg
+  Array.from(list.children).forEach(child => {
+    if (child !== emptyMsg) child.remove();
+  });
+
+  if (state.courses.length === 0) {
+    emptyMsg.style.display = '';
+    totalBar.style.display = 'none';
+    totalAmount.textContent = '0,00 €';
+    coursesTotal.textContent = '';
+    return;
+  }
+
+  emptyMsg.style.display = 'none';
+
+  let grand = 0;
+  state.courses.forEach((c, i) => {
+    grand += c.total;
+    const item = document.createElement('div');
+    item.className = 'course-item';
+    item.innerHTML = `
+      <div class="course-item-left">
+        <div class="course-item-num">Course ${i + 1}${c.isFirst ? ' (prise en charge incluse)' : ''}</div>
+        <div class="course-item-info">
+          Tarif <strong>${c.tarif}</strong> &mdash; <strong>${c.distance.toFixed(1)} km</strong>
+        </div>
+      </div>
+      <span class="course-item-price">${formatEur(c.total)}</span>
+      <button class="course-delete" onclick="deleteCourse(${c.id})">SUP</button>
+    `;
+    list.appendChild(item);
+  });
+
+  const n = state.courses.length;
+  coursesTotal.textContent = `${n} course${n > 1 ? 's' : ''}`;
+  totalAmount.textContent = formatEur(grand);
+  totalBar.style.display = 'flex';
+}
+
+function deleteCourse(id) {
+  const idx = state.courses.findIndex(c => c.id === id);
+  if (idx === -1) return;
+
+  const deletingFirst = state.courses[idx].isFirst;
+  state.courses.splice(idx, 1);
+
+  // Si on supprimait la première course (avec prise en charge),
+  // on la transfère à la nouvelle première course
+  if (deletingFirst && state.courses.length > 0) {
+    const nf = state.courses[0];
+    nf.isFirst = true;
+    nf.fee = BASE_FEE;
+    nf.total = nf.fare + BASE_FEE;
+  }
+
+  renderCourses();
+  saveState();
+}
+
+function clearCourses() {
+  state.courses = [];
+  hideResult();
+  renderCourses();
+  saveState();
+}
+
+// ===== THEME =====
+function applyTheme(t) {
+  document.body.dataset.theme = t;
+  state.theme = t;
+  document.getElementById('darkOpt').classList.toggle('active', t === 'dark');
+  document.getElementById('lightOpt').classList.toggle('active', t === 'light');
+}
+
+function setTheme(t) { applyTheme(t); saveState(); }
+
+
+
+// ===== ACCENT COLOR =====
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h, s, l = (max+min)/2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max) {
+      case r: h = ((g-b)/d + (g<b?6:0))/6; break;
+      case g: h = ((b-r)/d + 2)/6; break;
+      case b: h = ((r-g)/d + 4)/6; break;
+    }
+  }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+
+function applyAccent() {
+  const [h, s, l] = rgbToHsl(state.accentR, state.accentG, state.accentB);
+  const lClamped = Math.max(35, Math.min(65, l));
+  document.documentElement.style.setProperty('--accent-h', h);
+  document.documentElement.style.setProperty('--accent-s', s + '%');
+  document.documentElement.style.setProperty('--accent-l', lClamped + '%');
+  document.getElementById('accentPreview').style.background =
+    `rgb(${state.accentR},${state.accentG},${state.accentB})`;
+}
+
+function updateRGB() {
+  state.accentR = parseInt(document.getElementById('sliderR').value);
+  state.accentG = parseInt(document.getElementById('sliderG').value);
+  state.accentB = parseInt(document.getElementById('sliderB').value);
+  document.getElementById('valR').textContent = state.accentR;
+  document.getElementById('valG').textContent = state.accentG;
+  document.getElementById('valB').textContent = state.accentB;
+  applyAccent();
+  saveState();
+}
+
+// ===== FONT =====
+function applyFont(f) {
+  state.titleFont = f;
+  document.documentElement.style.setProperty('--title-font', `'${f}', Georgia, serif`);
+}
+
+function selectFont(btn) {
+  document.querySelectorAll('.font-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFont(btn.dataset.font);
+  saveState();
+}
+
+// ===== SETTINGS =====
+function openSettings() { document.getElementById('settingsOverlay').classList.add('open'); }
+function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
+
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('settingsOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
+});
+
+function syncSettingsUI() {
+  // Theme
+  applyTheme(state.theme);
+  // Sliders
+  document.getElementById('sliderR').value = state.accentR;
+  document.getElementById('sliderG').value = state.accentG;
+  document.getElementById('sliderB').value = state.accentB;
+  document.getElementById('valR').textContent = state.accentR;
+  document.getElementById('valG').textContent = state.accentG;
+  document.getElementById('valB').textContent = state.accentB;
+  applyAccent();
+  // Font
+  document.querySelectorAll('.font-opt').forEach(b => {
+    b.classList.toggle('active', b.dataset.font === state.titleFont);
+  });
+  applyFont(state.titleFont);
+}
+
+// ===== UTILS =====
+function formatEur(n) {
+  return n.toFixed(2).replace('.', ',') + ' \u20AC';
+}
+
+// Enter key to calculate
+document.getElementById('distanceInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+
+// ===== START =====
+init();
+</script>
+</body>
+</html>
