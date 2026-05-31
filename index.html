@@ -12,10 +12,10 @@
 <title>Tarificatix</title>
 <style>
 /* ===== FONTS ===== */
-@font-face { font-family: 'Font1'; src: url('font1.ttf') format('opentype'); }
-@font-face { font-family: 'Font2'; src: url('font2.ttf') format('opentype'); }
-@font-face { font-family: 'Font3'; src: url('font3.ttf') format('opentype'); }
-@font-face { font-family: 'Font4'; src: url('font4.ttf') format('opentype'); }
+@font-face { font-family: 'Font1'; src: url('font1.ttf') format('truetype'); }
+@font-face { font-family: 'Font2'; src: url('font2.ttf') format('truetype'); }
+@font-face { font-family: 'Font3'; src: url('font3.otf') format('opentype'); }
+@font-face { font-family: 'Font4'; src: url('font4.ttf') format('truetype'); }
 
 /* ===== ROOT VARIABLES ===== */
 :root {
@@ -698,6 +698,184 @@ main {
   margin: clamp(4px, 1.5vw, 8px) 0 clamp(18px, 4vw, 24px);
 }
 
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 150;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.nav-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--body-font);
+  font-size: clamp(0.62rem, 2vw, 0.72rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: clamp(10px, 2.5vw, 14px) 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.nav-tab .nav-icon { font-size: clamp(1.1rem, 3.5vw, 1.3rem); line-height: 1; }
+.nav-tab.active { color: var(--accent); }
+.nav-tab:active { opacity: 0.7; }
+
+/* ===== PAGE SYSTEM ===== */
+.page { display: none; flex: 1; flex-direction: column; }
+.page.active { display: flex; }
+.app-wrapper { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 60px); }
+
+/* ===== DESTINATIONS PAGE ===== */
+.dest-toolbar {
+  padding: clamp(10px, 3vw, 14px) clamp(14px, 4vw, 20px) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dest-search {
+  width: 100%;
+  background: var(--input-bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(10px, 2.5vw, 13px) clamp(12px, 3vw, 16px);
+  font-size: clamp(0.88rem, 3vw, 0.96rem);
+  font-family: var(--body-font);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.dest-search:focus { border-color: var(--accent); }
+.dest-search::placeholder { color: var(--text-muted); }
+.dest-filter-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.dest-filter-btn {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: clamp(0.68rem, 2.2vw, 0.76rem);
+  font-family: var(--body-font);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.dest-filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.dest-filter-btn:active { transform: scale(0.96); }
+.dest-count { margin-left: auto; font-size: clamp(0.68rem, 2.2vw, 0.76rem); color: var(--text-muted); font-weight: 600; }
+.dest-tarif-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.dest-tarif-chip {
+  flex: 1; min-width: 44px;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-dim);
+  font-family: var(--body-font);
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+  font-weight: 800;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.dest-tarif-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.dest-tarif-chip:active { transform: scale(0.95); }
+
+/* ===== DESTINATIONS TABLE ===== */
+.dest-table-wrap {
+  flex: 1;
+  overflow-x: auto;
+  padding: clamp(10px, 3vw, 14px) clamp(14px, 4vw, 20px);
+  -webkit-overflow-scrolling: touch;
+}
+.dest-table { width: 100%; border-collapse: collapse; font-size: clamp(0.78rem, 2.5vw, 0.88rem); }
+.dest-table thead th {
+  font-family: var(--title-font);
+  font-size: clamp(0.66rem, 2.1vw, 0.76rem);
+  font-weight: normal;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: clamp(8px, 2vw, 11px) clamp(8px, 2vw, 12px);
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.dest-table thead th.col-price { text-align: right; }
+.dest-table thead th.sortable { cursor: pointer; user-select: none; -webkit-user-select: none; }
+.dest-table thead th.sortable:hover { color: var(--accent-glow); }
+.sort-arrow { margin-left: 4px; opacity: 0.5; font-size: 0.65em; }
+.dest-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+.dest-table tbody tr:last-child { border-bottom: none; }
+.dest-table tbody tr:hover { background: var(--surface2); }
+.dest-table tbody tr:active { background: var(--bg3); }
+.dest-table td { padding: clamp(9px, 2.2vw, 12px) clamp(8px, 2vw, 12px); color: var(--text); vertical-align: middle; }
+.dest-table td.col-dest { font-weight: 500; }
+.dest-table td.col-km { white-space: nowrap; color: var(--text-dim); font-weight: 600; }
+.dest-table td.col-peage { text-align: center; }
+.dest-table td.col-price { text-align: right; font-family: var(--title-font); font-size: clamp(0.9rem, 3vw, 1.02rem); color: var(--accent); font-weight: normal; white-space: nowrap; }
+.peage-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: clamp(0.65rem, 2vw, 0.72rem);
+  font-weight: 700; letter-spacing: 0.04em;
+  padding: 3px 7px; border-radius: 6px; white-space: nowrap;
+}
+.peage-badge.oui { background: rgba(255,180,30,0.15); color: #e8a010; border: 1px solid rgba(255,180,30,0.3); }
+.peage-badge.non { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* ===== LOADING / ERROR ===== */
+.dest-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px; gap: 12px; color: var(--text-muted); font-size: 0.88rem; }
+.dest-loading-spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.dest-error { margin: 20px; background: rgba(220,50,50,0.08); border: 1px solid rgba(220,50,50,0.25); border-radius: 12px; padding: 16px; color: #e05; font-size: 0.84rem; line-height: 1.6; }
+
+/* ===== DETAIL MODAL ===== */
+.dest-modal-overlay { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); align-items: flex-end; justify-content: center; }
+.dest-modal-overlay.open { display: flex; }
+.dest-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 24px 24px 0 0; padding: clamp(20px, 5vw, 28px); width: 100%; max-width: 520px; animation: slideUp 0.25s ease; padding-bottom: calc(clamp(20px, 5vw, 28px) + env(safe-area-inset-bottom, 0px)); }
+.dest-modal-title { font-family: var(--title-font); font-size: clamp(1.1rem, 5vw, 1.5rem); color: var(--accent); font-weight: normal; margin-bottom: 4px; line-height: 1.2; }
+.dest-modal-sub { font-size: clamp(0.75rem, 2.3vw, 0.84rem); color: var(--text-muted); margin-bottom: clamp(16px, 4vw, 22px); }
+.dest-modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 2vw, 12px); margin-bottom: clamp(16px, 4vw, 22px); }
+.dest-modal-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: clamp(10px, 3vw, 14px); }
+.dest-modal-cell-label { font-size: clamp(0.62rem, 2vw, 0.7rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.dest-modal-cell-val { font-family: var(--title-font); font-size: clamp(1.1rem, 4.5vw, 1.4rem); color: var(--text); font-weight: normal; }
+.dest-modal-prices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: clamp(16px, 4vw, 22px); }
+.dest-modal-price-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: clamp(10px, 2.5vw, 13px) 4px; text-align: center; }
+.dest-modal-price-cell.current { background: var(--accent); border-color: var(--accent); }
+.dest-modal-price-letter { display: block; font-weight: 800; font-size: clamp(0.85rem, 3vw, 1rem); color: var(--text); line-height: 1; }
+.dest-modal-price-cell.current .dest-modal-price-letter { color: #fff; }
+.dest-modal-price-amount { display: block; font-family: var(--title-font); font-size: clamp(0.78rem, 2.5vw, 0.9rem); color: var(--accent); font-weight: normal; margin-top: 3px; }
+.dest-modal-price-cell.current .dest-modal-price-amount { color: rgba(255,255,255,0.9); }
+.dest-modal-close { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: clamp(12px, 3vw, 15px); font-family: var(--body-font); font-size: clamp(0.82rem, 2.8vw, 0.9rem); color: var(--text-dim); font-weight: 700; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; transition: all 0.15s; }
+.dest-modal-close:active { background: var(--bg3); transform: scale(0.98); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 380px) {
   .tarif-grid { gap: 6px; }
@@ -705,7 +883,6 @@ main {
   .tarif-btn-label { font-size: 0.95rem; }
   .tarif-btn-price { font-size: 0.6rem; }
 }
-
 @media (min-width: 600px) {
   .app-wrapper { padding-top: 8px; }
   header { border-radius: 0 0 16px 16px; }
@@ -727,6 +904,9 @@ main {
       </div>
     </div>
   </header>
+
+  <!-- PAGE : CALCUL -->
+  <div class="page active" id="pageCalc">
 
   <!-- MAIN -->
   <main>
@@ -801,12 +981,72 @@ main {
 
   </main>
 
+  </main>
+
   <!-- TOTAL BAR -->
   <div class="total-bar" id="totalBar" style="display:none">
     <span class="total-label">Total general</span>
     <span class="total-amount" id="totalAmount">0,00 €</span>
   </div>
 
+  </div><!-- /page calcul -->
+
+  <!-- PAGE : DESTINATIONS -->
+  <div class="page" id="pageDestinations">
+
+    <div class="dest-toolbar">
+      <!-- Recherche -->
+      <input type="search" class="dest-search" id="destSearch" placeholder="Rechercher une destination…" oninput="filterDestinations()" inputmode="search">
+
+      <!-- Sélecteur de tarif -->
+      <div class="dest-tarif-row">
+        <button class="dest-tarif-chip active" data-tarif="A" onclick="setDestTarif(this)">A</button>
+        <button class="dest-tarif-chip" data-tarif="B" onclick="setDestTarif(this)">B</button>
+        <button class="dest-tarif-chip" data-tarif="C" onclick="setDestTarif(this)">C</button>
+        <button class="dest-tarif-chip" data-tarif="D" onclick="setDestTarif(this)">D</button>
+      </div>
+
+      <!-- Filtres -->
+      <div class="dest-filter-row">
+        <button class="dest-filter-btn active" data-pec="false" onclick="setDestPec(this)">Sans prise en charge</button>
+        <button class="dest-filter-btn" data-pec="true" onclick="setDestPec(this)">+ Prise en charge (3 €)</button>
+        <span class="dest-count" id="destCount"></span>
+      </div>
+    </div>
+
+    <!-- Tableau -->
+    <div class="dest-table-wrap" id="destTableWrap">
+      <div class="dest-loading" id="destLoading">
+        <div class="dest-loading-spinner"></div>
+        Chargement des destinations…
+      </div>
+    </div>
+
+  </div><!-- /page destinations -->
+
+  <!-- NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="navCalc" onclick="switchTab('calc')">
+      <span class="nav-icon">🧮</span>
+      Calcul
+    </button>
+    <button class="nav-tab" id="navDest" onclick="switchTab('destinations')">
+      <span class="nav-icon">📍</span>
+      Destinations
+    </button>
+  </nav>
+
+</div>
+
+<!-- MODAL DESTINATION -->
+<div class="dest-modal-overlay" id="destModalOverlay" onclick="closeDestModal(event)">
+  <div class="dest-modal" id="destModal">
+    <div class="dest-modal-title" id="destModalTitle"></div>
+    <div class="dest-modal-sub" id="destModalSub"></div>
+    <div class="dest-modal-grid" id="destModalGrid"></div>
+    <div class="dest-modal-prices" id="destModalPrices"></div>
+    <button class="dest-modal-close" onclick="closeDestModal()">Fermer</button>
+  </div>
 </div>
 
 <!-- SETTINGS OVERLAY -->
@@ -879,6 +1119,7 @@ main {
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ===== STATE =====
 const BASE_FEE = 3.00;
@@ -1161,6 +1402,205 @@ function formatEur(n) {
 document.getElementById('distanceInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') calculate();
 });
+
+
+// ===== TAB NAVIGATION =====
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if (tab === 'calc') {
+    document.getElementById('pageCalc').classList.add('active');
+    document.getElementById('navCalc').classList.add('active');
+  } else {
+    document.getElementById('pageDestinations').classList.add('active');
+    document.getElementById('navDest').classList.add('active');
+    if (!destState.loaded && !destState.loading) loadDestinations();
+  }
+}
+
+// ===== DESTINATIONS STATE =====
+const TARIFS_KM = { A: 1.10, B: 1.65, C: 2.20, D: 3.30 };
+const destState = {
+  data: [],
+  filtered: [],
+  loaded: false,
+  loading: false,
+  tarif: 'A',
+  pec: false,
+  search: '',
+  sortCol: 'dest',
+  sortDir: 'asc'
+};
+
+// ===== LOAD EXCEL =====
+async function loadDestinations() {
+  destState.loading = true;
+  const wrap = document.getElementById('destTableWrap');
+  wrap.innerHTML = '<div class="dest-loading"><div class="dest-loading-spinner"></div>Chargement des destinations…</div>';
+
+  try {
+    const resp = await fetch('Tableau_tarif.xlsx');
+    if (!resp.ok) throw new Error(`Fichier introuvable (${resp.status})`);
+    const buf = await resp.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+    destState.data = rows.map(r => {
+      const keys = Object.keys(r);
+      const dest = r[keys[0]] ?? '';
+      const km   = parseFloat(r[keys[1]]) || null;
+      const peage = parseFloat(r[keys[2]]) || 0;
+      return { dest: String(dest).trim(), km, peage };
+    }).filter(r => r.dest && r.dest !== '-');
+
+    destState.loaded = true;
+    destState.loading = false;
+    applyDestFilter();
+  } catch(e) {
+    destState.loading = false;
+    wrap.innerHTML = `<div class="dest-error">
+      <strong>Impossible de charger le fichier Excel.</strong><br>
+      Vérifiez que <code>Tableau_tarif.xlsx</code> est bien dans le même dossier que ce fichier HTML.<br><br>
+      <em>Détail : ${e.message}</em>
+    </div>`;
+  }
+}
+
+// ===== FILTER & SORT =====
+function applyDestFilter() {
+  let d = [...destState.data];
+  const q = destState.search.toLowerCase().trim();
+  if (q) d = d.filter(r => r.dest.toLowerCase().includes(q));
+
+  // Sort
+  d.sort((a, b) => {
+    let va, vb;
+    if (destState.sortCol === 'dest')  { va = a.dest; vb = b.dest; }
+    else if (destState.sortCol === 'km') { va = a.km ?? -1; vb = b.km ?? -1; }
+    else if (destState.sortCol === 'peage') { va = a.peage; vb = b.peage; }
+    else { va = calcPrice(a); vb = calcPrice(b); }
+    if (va < vb) return destState.sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return destState.sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  destState.filtered = d;
+  document.getElementById('destCount').textContent = `${d.length} destination${d.length > 1 ? 's' : ''}`;
+  renderDestTable();
+}
+
+function calcPrice(row) {
+  if (!row.km) return null;
+  return TARIFS_KM[destState.tarif] * row.km + row.peage + (destState.pec ? BASE_FEE : 0);
+}
+
+function setDestTarif(btn) {
+  document.querySelectorAll('.dest-tarif-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  destState.tarif = btn.dataset.tarif;
+  applyDestFilter();
+}
+
+function setDestPec(btn) {
+  document.querySelectorAll('.dest-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  destState.pec = btn.dataset.pec === 'true';
+  applyDestFilter();
+}
+
+function filterDestinations() {
+  destState.search = document.getElementById('destSearch').value;
+  applyDestFilter();
+}
+
+function sortBy(col) {
+  if (destState.sortCol === col) {
+    destState.sortDir = destState.sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    destState.sortCol = col;
+    destState.sortDir = 'asc';
+  }
+  applyDestFilter();
+}
+
+// ===== RENDER TABLE =====
+function renderDestTable() {
+  const wrap = document.getElementById('destTableWrap');
+  const d = destState.sortDir;
+  const c = destState.sortCol;
+  const arrow = (col) => `<span class="sort-arrow ${c===col ? d : ''}">${c===col ? (d==='asc'?'▲':'▼') : '⇅'}</span>`;
+
+  if (destState.filtered.length === 0) {
+    wrap.innerHTML = `<div class="dest-loading" style="color:var(--text-muted)">Aucune destination trouvée</div>`;
+    return;
+  }
+
+  let rows = '';
+  for (const row of destState.filtered) {
+    const km   = row.km !== null ? row.km.toLocaleString('fr-FR', {maximumFractionDigits:1}) + ' km' : '—';
+    const prix = row.km ? formatEur(calcPrice(row)) : '—';
+    const badge = row.peage > 0
+      ? `<span class="peage-badge oui">⚠ ${row.peage.toLocaleString('fr-FR', {maximumFractionDigits:0})} €</span>`
+      : `<span class="peage-badge non">Non</span>`;
+    rows += `<tr onclick="openDestModal(${JSON.stringify(row.dest).replace(/'/g,"&#39;")})">
+      <td class="col-dest">${row.dest}</td>
+      <td class="col-km">${km}</td>
+      <td class="col-peage">${badge}</td>
+      <td class="col-price">${prix}</td>
+    </tr>`;
+  }
+
+  wrap.innerHTML = `<table class="dest-table">
+    <thead>
+      <tr>
+        <th class="sortable" onclick="sortBy('dest')">Destination ${arrow('dest')}</th>
+        <th class="sortable" onclick="sortBy('km')">Km ${arrow('km')}</th>
+        <th class="sortable" onclick="sortBy('peage')">Péage ${arrow('peage')}</th>
+        <th class="sortable col-price" onclick="sortBy('price')">Prix (tarif ${destState.tarif}) ${arrow('price')}</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ===== DETAIL MODAL =====
+function openDestModal(destName) {
+  const row = destState.data.find(r => r.dest === destName);
+  if (!row) return;
+
+  document.getElementById('destModalTitle').textContent = row.dest;
+  document.getElementById('destModalSub').textContent = 'Détail des tarifs depuis Sablé';
+
+  const km = row.km !== null ? row.km.toLocaleString('fr-FR', {maximumFractionDigits:1}) + ' km' : '—';
+  document.getElementById('destModalGrid').innerHTML = `
+    <div class="dest-modal-cell">
+      <div class="dest-modal-cell-label">Distance</div>
+      <div class="dest-modal-cell-val">${km}</div>
+    </div>
+    <div class="dest-modal-cell">
+      <div class="dest-modal-cell-label">Péage</div>
+      <div class="dest-modal-cell-val">${row.peage > 0 ? row.peage.toLocaleString('fr-FR', {maximumFractionDigits:0}) + ' €' : 'Aucun'}</div>
+    </div>`;
+
+  let prices = '';
+  for (const [t, rate] of Object.entries(TARIFS_KM)) {
+    const p = row.km ? formatEur(rate * row.km + row.peage + (destState.pec ? BASE_FEE : 0)) : '—';
+    const current = t === destState.tarif ? ' current' : '';
+    prices += `<div class="dest-modal-price-cell${current}">
+      <span class="dest-modal-price-letter">${t}</span>
+      <span class="dest-modal-price-amount">${p}</span>
+    </div>`;
+  }
+  document.getElementById('destModalPrices').innerHTML = prices;
+  document.getElementById('destModalOverlay').classList.add('open');
+}
+
+function closeDestModal(e) {
+  if (!e || e.target === document.getElementById('destModalOverlay') || !e.target) {
+    document.getElementById('destModalOverlay').classList.remove('open');
+  }
+}
 
 // ===== START =====
 init();
