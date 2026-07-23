@@ -12,10 +12,10 @@
 <title>Tarificatix</title>
 <style>
 /* ===== FONTS ===== */
-@font-face { font-family: 'Font1'; src: url('font1.ttf') format('truetype'); }
-@font-face { font-family: 'Font2'; src: url('font2.ttf') format('truetype'); }
-@font-face { font-family: 'Font3'; src: url('font3.otf') format('opentype'); }
-@font-face { font-family: 'Font4'; src: url('font4.ttf') format('truetype'); }
+@font-face { font-family: 'Font1'; src: url('font1.otf') format('opentype'), url('font1.ttf') format('truetype'); }
+@font-face { font-family: 'Font2'; src: url('font2.otf') format('opentype'), url('font2.ttf') format('truetype'); }
+@font-face { font-family: 'Font3'; src: url('font3.otf') format('opentype'), url('font3.ttf') format('truetype'); }
+@font-face { font-family: 'Font4'; src: url('font4.otf') format('opentype'), url('font4.ttf') format('truetype'); }
 
 /* ===== ROOT VARIABLES ===== */
 :root {
@@ -783,6 +783,7 @@ main {
 }
 .dest-filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .dest-filter-btn:active { transform: scale(0.96); }
+.dest-filter-sep { width: 1px; height: 20px; background: var(--border); }
 .dest-count { margin-left: auto; font-size: clamp(0.68rem, 2.2vw, 0.76rem); color: var(--text-muted); font-weight: 600; }
 .dest-tarif-row { display: flex; gap: 6px; flex-wrap: wrap; }
 .dest-tarif-chip {
@@ -841,6 +842,7 @@ main {
 .dest-table td.col-km { white-space: nowrap; color: var(--text-dim); font-weight: 600; }
 .dest-table td.col-peage { text-align: center; }
 .dest-table td.col-price { text-align: right; font-family: var(--title-font); font-size: clamp(0.9rem, 3vw, 1.02rem); color: var(--accent); font-weight: normal; white-space: nowrap; }
+.dest-table td.col-price.special { white-space: normal; line-height: 1.4; font-size: clamp(0.72rem, 2.4vw, 0.82rem); }
 .peage-badge {
   display: inline-flex; align-items: center; gap: 3px;
   font-size: clamp(0.65rem, 2vw, 0.72rem);
@@ -885,8 +887,101 @@ main {
 }
 @media (min-width: 600px) {
   .app-wrapper { padding-top: 8px; }
-  header { border-radius: 0 0 16px 16px; }
 }
+
+/* ===== DESKTOP / TABLET LAYOUT =====
+   En dessous de 700px : app en pleine largeur, comme sur mobile.
+   Au-delà : l'appli s'affiche comme une carte centrée, avec plus
+   d'espace pour le tableau des destinations. */
+@media (min-width: 700px) {
+  html, body { height: 100%; }
+  body {
+    --wrap-gap: clamp(20px, 4vw, 40px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--wrap-gap) 16px;
+    background: var(--bg2, var(--surface2));
+  }
+
+  .app-wrapper {
+    width: 100%;
+    max-width: 640px;
+    height: calc(100dvh - (var(--wrap-gap) * 2));
+    min-height: 0;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Le tableau des destinations profite de davantage de largeur */
+  .app-wrapper.view-dest { max-width: 880px; }
+
+  header {
+    border-radius: 22px 22px 0 0;
+  }
+
+  main { padding-bottom: clamp(70px, 10vw, 84px); }
+  #pageDestinations .dest-table-wrap { padding-bottom: clamp(70px, 10vw, 84px); }
+
+  /* La nav reste ancrée en bas de la carte. On la garde en position:fixed
+     (relative au viewport) plutôt qu'en position:absolute à l'intérieur
+     d'un conteneur scrollable : sinon elle remonte avec le contenu quand
+     celui-ci défile (bug constaté dans l'onglet Destinations). Comme la
+     carte .app-wrapper est elle-même centrée et de taille fixe à l'écran,
+     on peut reproduire sa position/largeur exactement en fixed. */
+  .bottom-nav {
+    position: fixed;
+    left: 50%;
+    bottom: var(--wrap-gap);
+    transform: translateX(-50%);
+    width: calc(100vw - 32px);
+    max-width: 640px;
+    border-radius: 0 0 22px 22px;
+  }
+  .app-wrapper.view-dest .bottom-nav { max-width: 880px; }
+
+  /* Les fenêtres modales s'affichent centrées, plutôt qu'en feuille du bas */
+  .overlay, .dest-modal-overlay {
+    align-items: center;
+  }
+  .settings-panel {
+    border-radius: 20px;
+    max-width: 440px;
+  }
+  .dest-modal {
+    border-radius: 20px;
+    max-width: 460px;
+    max-height: 85dvh;
+    overflow-y: auto;
+  }
+
+  .dest-table { font-size: 0.92rem; }
+}
+
+@media (min-width: 1024px) {
+  body { --wrap-gap: clamp(32px, 5vw, 56px); padding: var(--wrap-gap) 16px; }
+  .app-wrapper { max-width: 760px; }
+  .app-wrapper.view-dest { max-width: 1200px; }
+  .bottom-nav { max-width: 760px; }
+  .app-wrapper.view-dest .bottom-nav { max-width: 1200px; }
+}
+
+/* Écrans très larges (ex. 1920x1080) : le bloc doit s'étirer davantage
+   plutôt que de rester figé avec un grand vide autour. */
+@media (min-width: 1600px) {
+  .app-wrapper { max-width: 900px; }
+  .app-wrapper.view-dest { max-width: 1600px; }
+  .bottom-nav { max-width: 900px; }
+  .app-wrapper.view-dest .bottom-nav { max-width: 1600px; }
+}
+
 </style>
 </head>
 <body data-theme="dark">
@@ -981,8 +1076,6 @@ main {
 
   </main>
 
-  </main>
-
   <!-- TOTAL BAR -->
   <div class="total-bar" id="totalBar" style="display:none">
     <span class="total-label">Total general</span>
@@ -1008,8 +1101,12 @@ main {
 
       <!-- Filtres -->
       <div class="dest-filter-row">
-        <button class="dest-filter-btn active" data-pec="false" onclick="setDestPec(this)">Sans prise en charge</button>
-        <button class="dest-filter-btn" data-pec="true" onclick="setDestPec(this)">+ Prise en charge (3 €)</button>
+        <button class="dest-filter-btn active" data-filter="all" onclick="setDestFilter(this)">Tout</button>
+        <button class="dest-filter-btn" data-filter="peage" onclick="setDestFilter(this)">Avec péage</button>
+        <button class="dest-filter-btn" data-filter="nopeage" onclick="setDestFilter(this)">Sans péage</button>
+        <span class="dest-filter-sep"></span>
+        <button class="dest-filter-btn dest-approche-btn active" data-approche="1" onclick="setDestApproche(this)">Avec 3€</button>
+        <button class="dest-filter-btn dest-approche-btn" data-approche="0" onclick="setDestApproche(this)">Sans 3€</button>
         <span class="dest-count" id="destCount"></span>
       </div>
     </div>
@@ -1175,7 +1272,12 @@ function selectTarif(btn) {
   btn.classList.add('active');
   state.selectedTarif = btn.dataset.tarif;
   state.selectedRate = parseFloat(btn.dataset.rate);
-  hideResult();
+  // Si un résultat est déjà affiché, on le recalcule directement avec le
+  // nouveau tarif plutôt que de le masquer (évite d'avoir à recliquer
+  // sur "Calculer" juste pour changer de tarif).
+  if (state.currentResult) {
+    updateResult(state.currentResult.distance);
+  }
 }
 
 // ===== CALCULATE =====
@@ -1185,7 +1287,10 @@ function calculate() {
     document.getElementById('distanceInput').focus();
     return;
   }
+  updateResult(dist);
+}
 
+function updateResult(dist) {
   // La prise en charge (3€) n'est appliquée qu'à la toute première course
   const isFirst = state.courses.length === 0;
   const fee = isFirst ? BASE_FEE : 0;
@@ -1408,12 +1513,15 @@ document.getElementById('distanceInput').addEventListener('keydown', e => {
 function switchTab(tab) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  const wrapper = document.querySelector('.app-wrapper');
   if (tab === 'calc') {
     document.getElementById('pageCalc').classList.add('active');
     document.getElementById('navCalc').classList.add('active');
+    wrapper.classList.remove('view-dest');
   } else {
     document.getElementById('pageDestinations').classList.add('active');
     document.getElementById('navDest').classList.add('active');
+    wrapper.classList.add('view-dest');
     if (!destState.loaded && !destState.loading) loadDestinations();
   }
 }
@@ -1426,10 +1534,11 @@ const destState = {
   loaded: false,
   loading: false,
   tarif: 'A',
-  pec: false,
+  filter: 'all',
   search: '',
   sortCol: 'dest',
-  sortDir: 'asc'
+  sortDir: 'asc',
+  approche: true // "Avec 3€" coché par défaut au premier lancement
 };
 
 // ===== LOAD EXCEL =====
@@ -1451,7 +1560,20 @@ async function loadDestinations() {
       const dest = r[keys[0]] ?? '';
       const km   = parseFloat(r[keys[1]]) || null;
       const peage = parseFloat(r[keys[2]]) || 0;
-      return { dest: String(dest).trim(), km, peage };
+      const tarif1 = parseFloat(r[keys[3]]);
+      const tarif2 = parseFloat(r[keys[4]]);
+      // Lignes sans kilométrage précisé (colonne kms = "-") : forfait spécifique
+      // sur les colonnes Tarif 1 / Tarif 2. Les 3€ d'approche et le péage
+      // éventuel sont déjà inclus dans ces tarifs, donc pas de calcul en plus.
+      const special = km === null && (!isNaN(tarif1) || !isNaN(tarif2));
+      return {
+        dest: String(dest).trim(),
+        km,
+        peage,
+        special,
+        tarif1: isNaN(tarif1) ? null : tarif1,
+        tarif2: isNaN(tarif2) ? null : tarif2
+      };
     }).filter(r => r.dest && r.dest !== '-');
 
     destState.loaded = true;
@@ -1472,6 +1594,8 @@ function applyDestFilter() {
   let d = [...destState.data];
   const q = destState.search.toLowerCase().trim();
   if (q) d = d.filter(r => r.dest.toLowerCase().includes(q));
+  if (destState.filter === 'peage')   d = d.filter(r => r.peage > 0);
+  if (destState.filter === 'nopeage') d = d.filter(r => r.peage === 0);
 
   // Sort
   d.sort((a, b) => {
@@ -1490,9 +1614,32 @@ function applyDestFilter() {
   renderDestTable();
 }
 
+// Sur les lignes en forfait spécifique : Tarif 1 = tarif C, Tarif 2 = tarif D.
+// Si le tarif sélectionné est A ou B (non mappé), on ne peut pas choisir
+// entre les deux -> null (affichage des deux valeurs côte à côte).
+function getSpecialPrice(row) {
+  if (destState.tarif === 'C') return row.tarif1;
+  if (destState.tarif === 'D') return row.tarif2;
+  return null;
+}
+
 function calcPrice(row) {
+  if (row.special) {
+    const sp = getSpecialPrice(row);
+    return sp !== null && sp !== undefined ? sp : (row.tarif1 ?? row.tarif2 ?? null);
+  }
   if (!row.km) return null;
-  return TARIFS_KM[destState.tarif] * row.km + row.peage + (destState.pec ? BASE_FEE : 0);
+  const approche = destState.approche ? BASE_FEE : 0;
+  return TARIFS_KM[destState.tarif] * row.km + row.peage + approche;
+}
+
+// Texte "Tarif 1 : X € / Tarif 2 : Y €" pour les lignes en forfait spécifique
+// quand le tarif sélectionné (A ou B) ne correspond à aucun des deux.
+function formatSpecialPrice(row, separator) {
+  const parts = [];
+  if (row.tarif1 !== null) parts.push(`Tarif 1 : ${formatEur(row.tarif1)}`);
+  if (row.tarif2 !== null) parts.push(`Tarif 2 : ${formatEur(row.tarif2)}`);
+  return parts.join(separator);
 }
 
 function setDestTarif(btn) {
@@ -1502,10 +1649,17 @@ function setDestTarif(btn) {
   applyDestFilter();
 }
 
-function setDestPec(btn) {
-  document.querySelectorAll('.dest-filter-btn').forEach(b => b.classList.remove('active'));
+function setDestFilter(btn) {
+  document.querySelectorAll('.dest-filter-row .dest-filter-btn:not(.dest-approche-btn)').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  destState.pec = btn.dataset.pec === 'true';
+  destState.filter = btn.dataset.filter;
+  applyDestFilter();
+}
+
+function setDestApproche(btn) {
+  document.querySelectorAll('.dest-approche-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  destState.approche = btn.dataset.approche === '1';
   applyDestFilter();
 }
 
@@ -1538,26 +1692,46 @@ function renderDestTable() {
 
   let rows = '';
   for (const row of destState.filtered) {
-    const km   = row.km !== null ? row.km.toLocaleString('fr-FR', {maximumFractionDigits:1}) + ' km' : '—';
-    const prix = row.km ? formatEur(calcPrice(row)) : '—';
+    const km = row.km !== null ? row.km.toLocaleString('fr-FR', {maximumFractionDigits:1}) + ' km' : '—';
+
+    // Prix : sur les lignes forfait, on n'affiche Tarif 1 ET Tarif 2 en même
+    // temps que si le tarif sélectionné n'est ni C ni D (correspondance
+    // inconnue). Sinon on affiche uniquement la valeur applicable.
+    let prix, isDualPrice = false;
+    if (row.special) {
+      const sp = getSpecialPrice(row);
+      if (sp !== null && sp !== undefined) {
+        prix = formatEur(sp);
+      } else {
+        prix = formatSpecialPrice(row, '<br>');
+        isDualPrice = true;
+      }
+    } else {
+      prix = row.km ? formatEur(calcPrice(row)) : '—';
+    }
+
+    // Péage : on garde oui/non partout, y compris sur les lignes forfait.
+    // Un trait dans le fichier source vaut déjà 0€ (voir loadDestinations).
     const badge = row.peage > 0
       ? `<span class="peage-badge oui">⚠ ${row.peage.toLocaleString('fr-FR', {maximumFractionDigits:0})} €</span>`
       : `<span class="peage-badge non">Non</span>`;
+
     rows += `<tr onclick="openDestModal(${JSON.stringify(row.dest).replace(/'/g,"&#39;")})">
       <td class="col-dest">${row.dest}</td>
       <td class="col-km">${km}</td>
       <td class="col-peage">${badge}</td>
-      <td class="col-price">${prix}</td>
+      <td class="col-price${isDualPrice ? ' special' : ''}">${prix}</td>
     </tr>`;
   }
 
+  const approcheLabel = destState.approche ? ' +3€' : '';
   wrap.innerHTML = `<table class="dest-table">
     <thead>
       <tr>
         <th class="sortable" onclick="sortBy('dest')">Destination ${arrow('dest')}</th>
         <th class="sortable" onclick="sortBy('km')">Km ${arrow('km')}</th>
         <th class="sortable" onclick="sortBy('peage')">Péage ${arrow('peage')}</th>
-        <th class="sortable col-price" onclick="sortBy('price')">Prix (tarif ${destState.tarif}) ${arrow('price')}</th>
+        <th class="sortable col-price" onclick="sortBy('price')">Prix (tarif ${destState.tarif}${approcheLabel}) ${arrow('price')}</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
@@ -1583,16 +1757,54 @@ function openDestModal(destName) {
       <div class="dest-modal-cell-val">${row.peage > 0 ? row.peage.toLocaleString('fr-FR', {maximumFractionDigits:0}) + ' €' : 'Aucun'}</div>
     </div>`;
 
-  let prices = '';
-  for (const [t, rate] of Object.entries(TARIFS_KM)) {
-    const p = row.km ? formatEur(rate * row.km + row.peage + (destState.pec ? BASE_FEE : 0)) : '—';
-    const current = t === destState.tarif ? ' current' : '';
-    prices += `<div class="dest-modal-price-cell${current}">
-      <span class="dest-modal-price-letter">${t}</span>
-      <span class="dest-modal-price-amount">${p}</span>
-    </div>`;
+  const pricesEl = document.getElementById('destModalPrices');
+  if (row.special) {
+    // Forfait spécifique : Tarif 1 correspond au tarif C, Tarif 2 au tarif D
+    // (approche + péage déjà inclus dans ces montants). Si le tarif
+    // sélectionné est C ou D, on n'affiche que la valeur correspondante ;
+    // sinon (A/B, correspondance inconnue) on remontre les deux.
+    const sp = getSpecialPrice(row);
+    if (sp !== null && sp !== undefined) {
+      pricesEl.style.gridTemplateColumns = '1fr';
+      pricesEl.innerHTML = `<div class="dest-modal-price-cell current">
+        <span class="dest-modal-price-letter">${destState.tarif}</span>
+        <span class="dest-modal-price-amount">${formatEur(sp)}</span>
+      </div>`;
+    } else {
+      pricesEl.style.gridTemplateColumns = '1fr 1fr';
+      let prices = '';
+      if (row.tarif1 !== null) {
+        prices += `<div class="dest-modal-price-cell">
+          <span class="dest-modal-price-letter">Tarif 1</span>
+          <span class="dest-modal-price-amount">${formatEur(row.tarif1)}</span>
+        </div>`;
+      }
+      if (row.tarif2 !== null) {
+        prices += `<div class="dest-modal-price-cell">
+          <span class="dest-modal-price-letter">Tarif 2</span>
+          <span class="dest-modal-price-amount">${formatEur(row.tarif2)}</span>
+        </div>`;
+      }
+      pricesEl.innerHTML = prices;
+    }
+    document.getElementById('destModalSub').textContent = 'Forfait spécifique — approche et péage inclus';
+  } else {
+    pricesEl.style.gridTemplateColumns = '';
+    const approche = destState.approche ? BASE_FEE : 0;
+    let prices = '';
+    for (const [t, rate] of Object.entries(TARIFS_KM)) {
+      const p = row.km ? formatEur(rate * row.km + row.peage + approche) : '—';
+      const current = t === destState.tarif ? ' current' : '';
+      prices += `<div class="dest-modal-price-cell${current}">
+        <span class="dest-modal-price-letter">${t}</span>
+        <span class="dest-modal-price-amount">${p}</span>
+      </div>`;
+    }
+    pricesEl.innerHTML = prices;
+    document.getElementById('destModalSub').textContent = destState.approche
+      ? 'Détail des tarifs depuis Sablé (prise en charge 3€ incluse)'
+      : 'Détail des tarifs depuis Sablé (sans prise en charge)';
   }
-  document.getElementById('destModalPrices').innerHTML = prices;
   document.getElementById('destModalOverlay').classList.add('open');
 }
 
